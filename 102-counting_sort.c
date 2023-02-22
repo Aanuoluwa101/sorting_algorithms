@@ -1,46 +1,52 @@
-/**
- * get_max - finds the maximum value in an array of integers
- * @array: an array of integers
- * @size: size of the array
- * 
- * Returns: the greatest integer in the array
- */
-int get_max(int *array, size_t size)
-{
-    int i;
-    int max;
-
-    max = array[0];
-    for (i = 1; i < size, i++)
-    {
-        if (array[i] > max)
-            max = array[i];
-    }
-    return (max);
-}
+#include "sort.h"
 
 /**
- * counting_sort - sorts an array of integers in ascending order 
- * using the Counting sort algorithm 
+ * counting_sort - sorts an array of integers in ascending order
+ * using the Counting sort algorithm
  * @array: the array to be sorted
  * @size: size or length of the array
  */
+
 void counting_sort(int *array, size_t size)
 {
-    int max;
-    int *count_arr;
+	int n, i;
+	int *buff, *a;
 
-    max = get_max(array, size);
-    count_arr = calloc(sizeof(int) * max + 1);
-    if (count_arr == NULL)
-        exit(EXIT_FAILURE);
+	if (size < 2)
+		return;
 
-    for (i = 0; i < size; i++)
-        count_arr[array[i]] += 1;
-    
-    for (i = 0; i < max; i++)
-        count_arr[i + 1] = count_arr[i] + count_arr[i + 1];
-    
-    
-    
+	for (n = i = 0; i < (int)size; i++)
+		if (array[i] > n)
+			n = array[i];
+
+	buff = malloc(sizeof(int) * (n + 1));
+	if (!buff)
+		return;
+
+	for (i = 0; i <= n; i++)
+		buff[i] = 0;
+	for (i = 0; i < (int)size; i++)
+		buff[array[i]] += 1;
+	for (i = 1; i <= n; i++)
+		buff[i] += buff[i - 1];
+
+	print_array(buff, (n + 1));
+	a = malloc(sizeof(int) * (size + 1));
+
+	if (!a)
+	{
+		free(buff);
+		return;
+	}
+	for (i = 0; i < (int)size; i++)
+	{
+		a[buff[array[i]] - 1] = array[i];
+		buff[array[i]] -= 1;
+	}
+
+	for (i = 0; i < (int)size; i++)
+		array[i] = a[i];
+
+	free(buff);
+	free(a);
 }
